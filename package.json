@@ -1,7 +1,7 @@
 {
-  "name": "market-intel-dashboard",
+  "name": "earth-watch",
   "version": "1.0.0",
-  "description": "Market intelligence dashboard",
+  "description": "Earth Watch — space weather, disasters, seismic, live cams",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

@@ -41,6 +41,7 @@
     .arrow { color:var(--dim); font-size:14px; }
     .card-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; }
     .card-src { font-size:11px; font-family:'SF Mono','Fira Code',monospace; color:var(--dim); }
+    .ts { font-family:'SF Mono','Fira Code',monospace; font-size:11px; color:var(--dim); }
     footer { font-size:11px; color:var(--dim); font-family:'SF Mono','Fira Code',monospace; text-align:center; padding-top:1rem; border-top:0.5px solid var(--border); }
   </style>
 </head>
@@ -48,7 +49,7 @@
 
 <header>
   <span class="logo">&#127758; Earth Watch</span>
-  <a href="/" class="back">&#8592; Market Intel</a>
+  <span class="ts" id="ts"></span>
 </header>
 
 <div class="nav-pills">
@@ -56,6 +57,7 @@
   <a href="#weather" class="nav-pill">Weather</a>
   <a href="#disasters" class="nav-pill">Disasters &amp; Alerts</a>
   <a href="#seismic" class="nav-pill">Seismic &amp; Volcanic</a>
+  <a href="#air-pollution" class="nav-pill">Air Pollution</a>
   <a href="#live-cams" class="nav-pill">Live Cams</a>
 </div>
 
@@ -127,6 +129,28 @@
   </a>
 </div>
 
+<div class="section-header" data-section="air-pollution">
+  <span class="section-label">Air Pollution</span>
+  <span class="section-chevron">&#9660;</span>
+</div>
+<div class="cards" id="air-pollution">
+  <a class="card" href="https://map.purpleair.com/air-quality-standards-us-epa-aqi?opt=%2F1%2Flp%2Fa10%2Fp604800%2FcC0#2.18/41.16/-75.16" target="_blank">
+    <div class="card-top"><span class="badge" style="background:var(--purple-bg);color:var(--purple)">PURPLEAIR</span><span class="arrow">&#8599;</span></div>
+    <div class="card-title">PurpleAir AQI Map</div>
+    <div class="card-src">map.purpleair.com</div>
+  </a>
+  <a class="card" href="https://www.iqair.com/world-air-quality" target="_blank">
+    <div class="card-top"><span class="badge" style="background:var(--blue-bg);color:var(--blue)">IQAIR</span><span class="arrow">&#8599;</span></div>
+    <div class="card-title">World Air Quality Rankings</div>
+    <div class="card-src">iqair.com</div>
+  </a>
+  <a class="card" href="https://waqi.info/" target="_blank">
+    <div class="card-top"><span class="badge" style="background:var(--teal-bg);color:var(--teal)">WAQI</span><span class="arrow">&#8599;</span></div>
+    <div class="card-title">World Air Quality Index Map</div>
+    <div class="card-src">waqi.info</div>
+  </a>
+</div>
+
 <div class="section-header" data-section="live-cams">
   <span class="section-label">Live Cams</span>
   <span class="section-chevron">&#9660;</span>
@@ -139,7 +163,7 @@
   </a>
 </div>
 
-<footer>Earth Watch &mdash; <a href="/" style="color:var(--dim);text-decoration:none;">Market Intel</a></footer>
+<footer>Earth Watch</footer>
 
 <script>
   const STORE_KEY = 'ew_collapsed';
@@ -166,6 +190,15 @@
     });
   }
   initSections();
+
+  function setTimestamp() {
+    const now = new Date();
+    document.getElementById('ts').textContent =
+      now.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'}) +
+      ' · ' + now.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'});
+  }
+  setTimestamp();
+  setInterval(setTimestamp, 60000);
 </script>
 </body>
 </html>

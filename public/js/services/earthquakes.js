@@ -1,0 +1,15 @@
+import { readJson } from '../utils.js';
+import { APP_CONFIG } from '../config.js';
+
+const mock = {
+  card: { value: '—', subtitle: 'Fetching earthquake data…', url: 'https://earthquake.usgs.gov/earthquakes/map/' },
+  feed: null
+};
+
+export async function getEarthquakeSummary() {
+  try {
+    return await readJson(APP_CONFIG.endpoints.earthquakes);
+  } catch {
+    return mock;
+  }
+}

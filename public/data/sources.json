@@ -1,0 +1,124 @@
+{
+  "seismic": [
+    {
+      "title": "USGS Earthquake Map",
+      "description": "Global earthquake map and event details.",
+      "domain": "earthquake.usgs.gov",
+      "url": "https://earthquake.usgs.gov/earthquakes/map/"
+    },
+    {
+      "title": "VolcanoDiscovery Quakes",
+      "description": "Fast earthquake browsing and summaries.",
+      "domain": "volcanodiscovery.com",
+      "url": "https://www.volcanodiscovery.com/earthquakes/today.html"
+    },
+    {
+      "title": "Volcano Map",
+      "description": "Live volcanic activity map.",
+      "domain": "volcanodiscovery.com",
+      "url": "https://www.volcanodiscovery.com/volcano-map.html"
+    }
+  ],
+  "weather": [
+    {
+      "title": "Ventusky",
+      "description": "Global weather visualization.",
+      "domain": "ventusky.com",
+      "url": "https://www.ventusky.com/"
+    },
+    {
+      "title": "National Weather Service",
+      "description": "US weather warnings and forecasts.",
+      "domain": "weather.gov",
+      "url": "https://www.weather.gov/"
+    },
+    {
+      "title": "Canada Weather Alerts",
+      "description": "Canadian alert map and warnings.",
+      "domain": "weather.gc.ca",
+      "url": "https://weather.gc.ca/"
+    },
+    {
+      "title": "GDACS",
+      "description": "Global disaster alert and coordination.",
+      "domain": "gdacs.org",
+      "url": "https://www.gdacs.org/"
+    },
+    {
+      "title": "National Hurricane Center",
+      "description": "Active hurricane and tropical storm tracking.",
+      "domain": "nhc.noaa.gov",
+      "url": "https://www.nhc.noaa.gov/"
+    }
+  ],
+  "airQuality": [
+    {
+      "title": "PurpleAir Map",
+      "description": "Sensor-based AQI map.",
+      "domain": "map.purpleair.com",
+      "url": "https://map.purpleair.com/"
+    },
+    {
+      "title": "IQAir World AQI",
+      "description": "Air quality rankings and regional views.",
+      "domain": "iqair.com",
+      "url": "https://www.iqair.com/world-air-quality"
+    },
+    {
+      "title": "WAQI",
+      "description": "World Air Quality Index map.",
+      "domain": "waqi.info",
+      "url": "https://waqi.info/"
+    }
+  ],
+  "spaceWeather": [
+    {
+      "title": "SpaceWeatherLive",
+      "description": "Solar flares, aurora, and geomagnetic conditions.",
+      "domain": "spaceweatherlive.com",
+      "url": "https://www.spaceweatherlive.com/"
+    },
+    {
+      "title": "SWPC",
+      "description": "NOAA space weather products and forecasts.",
+      "domain": "swpc.noaa.gov",
+      "url": "https://www.swpc.noaa.gov/"
+    },
+    {
+      "title": "NASA DONKI",
+      "description": "Space weather event database.",
+      "domain": "ccmc.gsfc.nasa.gov",
+      "url": "https://ccmc.gsfc.nasa.gov/donki/"
+    }
+  ],
+  "maritime": [
+    {
+      "title": "MarineTraffic Live",
+      "description": "Real-time AIS vessel tracking worldwide.",
+      "domain": "marinetraffic.com",
+      "url": "https://www.marinetraffic.com/"
+    },
+    {
+      "title": "Fleet / Ship Search",
+      "description": "Search vessels, fleets, and port activity.",
+      "domain": "marinetraffic.com",
+      "url": "https://www.marinetraffic.com/en/ais/home/centerx:0/centery:0/zoom:2"
+    }
+  ],
+  "intel": [
+    {
+      "title": "World Monitor",
+      "description": "Global monitoring dashboard and intelligence feed.",
+      "domain": "worldmonitor.app",
+      "url": "https://worldmonitor.app/"
+    }
+  ],
+  "liveCams": [
+    {
+      "title": "WorldCam Live",
+      "description": "Quick public live stream launcher.",
+      "domain": "youtube.com",
+      "url": "https://www.youtube.com/@WorldCamLIVE/streams"
+    }
+  ]
+}

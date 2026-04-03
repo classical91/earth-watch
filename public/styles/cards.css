@@ -1,0 +1,97 @@
+.status-card,
+.feed-item,
+.source-card,
+.map-links a {
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius: var(--radius);
+}
+
+.status-card {
+  padding: 18px;
+  min-height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-kicker {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.status-card h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2vw, 2.2rem);
+}
+
+.card-subtitle {
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+
+.inline-link {
+  color: var(--blue);
+  text-decoration: none;
+  margin-top: 14px;
+}
+
+.ghost-btn {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.feed-item {
+  padding: 16px;
+}
+
+.feed-item-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.feed-item-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.feed-item-meta,
+.source-card p,
+.feed-item p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.feed-item a,
+.map-links a,
+.source-card {
+  text-decoration: none;
+}
+
+.map-links a {
+  padding: 16px;
+}
+
+.source-card {
+  display: block;
+  padding: 16px;
+}
+
+.source-card strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.severity-low { color: var(--green); }
+.severity-medium { color: var(--amber); }
+.severity-high { color: var(--red); }
+.severity-info { color: var(--blue); }

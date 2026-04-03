@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Earth Watch</title>
+    <meta name="description" content="Earth Watch: earthquakes, weather alerts, air quality, space weather, maritime traffic, and global intelligence in one dashboard." />
+    <meta name="theme-color" content="#0f1012" />
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/layout.css" />
+    <link rel="stylesheet" href="./styles/cards.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <div>
+          <p class="eyebrow">Earth systems monitor</p>
+          <h1>🌍 Earth Watch</h1>
+          <p class="subhead">Earthquakes, alerts, air quality, space weather, maritime traffic, and global intelligence.</p>
+        </div>
+        <div class="header-meta">
+          <div class="refresh-pill">
+            <span class="muted-label">Last refreshed</span>
+            <strong id="refresh-time">—</strong>
+          </div>
+          <div class="region-switcher" role="group" aria-label="Region selector">
+            <button class="region-btn is-active" data-region="global">Global</button>
+            <button class="region-btn" data-region="us">US</button>
+            <button class="region-btn" data-region="canada">Canada</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero-cards" aria-label="Overview cards">
+          <article class="status-card">
+            <p class="card-kicker">Major quake</p>
+            <h2 id="quake-value">—</h2>
+            <p id="quake-subtitle" class="card-subtitle">Waiting for data</p>
+            <a id="quake-link" class="inline-link" href="#" hidden>Open source ↗</a>
+          </article>
+          <article class="status-card">
+            <p class="card-kicker">Active alerts</p>
+            <h2 id="alerts-value">—</h2>
+            <p id="alerts-subtitle" class="card-subtitle">Waiting for data</p>
+            <a id="alerts-link" class="inline-link" href="#" hidden>Open source ↗</a>
+          </article>
+          <article class="status-card">
+            <p class="card-kicker">AQI hotspot</p>
+            <h2 id="aqi-value">—</h2>
+            <p id="aqi-subtitle" class="card-subtitle">Waiting for data</p>
+            <a id="aqi-link" class="inline-link" href="#" hidden>Open source ↗</a>
+          </article>
+          <article class="status-card">
+            <p class="card-kicker">Space weather</p>
+            <h2 id="space-value">—</h2>
+            <p id="space-subtitle" class="card-subtitle">Waiting for data</p>
+            <a id="space-link" class="inline-link" href="#" hidden>Open source ↗</a>
+          </article>
+        </section>
+
+        <section class="panel feed-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Priority feed</p>
+              <h2>What needs attention</h2>
+            </div>
+            <button id="refresh-btn" class="ghost-btn" type="button">Refresh now</button>
+          </div>
+          <div id="priority-feed" class="feed-list" aria-live="polite"></div>
+        </section>
+
+        <section class="panel map-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Maps</p>
+              <h2>Quick launch</h2>
+            </div>
+          </div>
+          <div class="map-links">
+            <a href="https://earthquake.usgs.gov/earthquakes/map/" target="_blank" rel="noopener noreferrer">USGS Earthquake Map ↗</a>
+            <a href="https://www.ventusky.com/" target="_blank" rel="noopener noreferrer">Ventusky ↗</a>
+            <a href="https://map.purpleair.com/" target="_blank" rel="noopener noreferrer">PurpleAir ↗</a>
+            <a href="https://www.spaceweatherlive.com/" target="_blank" rel="noopener noreferrer">SpaceWeatherLive ↗</a>
+            <a href="https://www.marinetraffic.com/" target="_blank" rel="noopener noreferrer">MarineTraffic ↗</a>
+            <a href="https://worldmonitor.app/" target="_blank" rel="noopener noreferrer">World Monitor ↗</a>
+          </div>
+        </section>
+
+        <section class="sources-stack" id="sources-root"></section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Earth Watch</span>
+        <span id="footer-refresh">Data refresh pending</span>
+      </footer>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

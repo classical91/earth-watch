@@ -6,9 +6,9 @@ const mock = {
   feed: null
 };
 
-export async function getEarthquakeSummary() {
+export async function getEarthquakeSummary(region) {
   try {
-    return await readJson(APP_CONFIG.endpoints.earthquakes);
+    return await readJson(`${APP_CONFIG.endpoints.earthquakes}?region=${region}`);
   } catch {
     return mock;
   }

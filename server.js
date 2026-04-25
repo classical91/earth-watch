@@ -9,12 +9,21 @@ app.use(express.static(PUBLIC_DIR));
 
 // --- Live data API routes ---
 
+// Geographic bounds for regional earthquake filtering
+const QUAKE_BOUNDS = {
+  us:     'minlatitude=24&maxlatitude=50&minlongitude=-125&maxlongitude=-66',
+  canada: 'minlatitude=42&maxlatitude=84&minlongitude=-141&maxlongitude=-52',
+};
+
 // USGS Earthquake summary
-app.get('/api/earthquakes', async (_req, res) => {
+app.get('/api/earthquakes', async (req, res) => {
+  const region = req.query.region || 'global';
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const url = QUAKE_BOUNDS[region]
+    ? `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=magnitude&limit=20&minmagnitude=4.5&starttime=${weekAgo}&${QUAKE_BOUNDS[region]}`
+    : 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson';
   try {
-    const r = await fetch(
-      'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
-    );
+    const r = await fetch(url);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const json = await r.json();
     const quakes = (json.features || []).sort(
@@ -55,11 +64,55 @@ app.get('/api/earthquakes', async (_req, res) => {
   }
 });
 
-// NWS Weather alerts
+// Weather alerts
 app.get('/api/weather-alerts', async (req, res) => {
   const region = req.query.region || 'global';
-  const areaMap = { us: '&area=US', canada: '', global: '' };
-  const area = areaMap[region] || '';
+
+  if (region === 'canada') {
+    // MSC (Meteorological Service of Canada) GeoMet OGC API
+    try {
+      const r = await fetch(
+        'https://api.weather.gc.ca/collections/alerts/items?lang=en&f=json&limit=50',
+        { headers: { 'User-Agent': 'EarthWatch/1.0 (contact@earthwatch.app)' } }
+      );
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const json = await r.json();
+      const alerts = (json.features || []).filter(f =>
+        f.properties.status === 'Actual' &&
+        ['Extreme', 'Severe'].includes(f.properties.severity)
+      );
+      const count = alerts.length;
+      const top = alerts[0];
+      return res.json({
+        card: {
+          value: String(count),
+          subtitle: count
+            ? `${top.properties.event} — ${top.properties.areaDesc || top.properties.headline?.substring(0, 60)}`
+            : 'No active severe alerts',
+          url: 'https://weather.gc.ca/warnings/'
+        },
+        feed: count
+          ? {
+              title: top.properties.event,
+              summary: top.properties.headline || top.properties.description?.substring(0, 200),
+              severity: top.properties.severity === 'Extreme' ? 'high' : 'medium',
+              label: 'Alert',
+              updatedAt: top.properties.sent || new Date().toISOString(),
+              url: 'https://weather.gc.ca/warnings/'
+            }
+          : null
+      });
+    } catch (err) {
+      console.error('[weather-alerts/canada]', err.message);
+      return res.json({
+        card: { value: '—', subtitle: 'Data unavailable', url: 'https://weather.gc.ca/warnings/' },
+        feed: null
+      });
+    }
+  }
+
+  // NWS — covers US; global falls back to full NWS feed
+  const area = region === 'us' ? '&area=US' : '';
   try {
     const r = await fetch(
       `https://api.weather.gov/alerts/active?status=actual&severity=Extreme,Severe${area}`,

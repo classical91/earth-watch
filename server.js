@@ -15,6 +15,7 @@ app.get('/api/earthquakes', async (_req, res) => {
     const r = await fetch(
       'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson'
     );
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const json = await r.json();
     const quakes = (json.features || []).sort(
       (a, b) => b.properties.mag - a.properties.mag
@@ -26,7 +27,8 @@ app.get('/api/earthquakes', async (_req, res) => {
         feed: null
       });
     }
-    const mag = top.properties.mag?.toFixed(1);
+    const magNum = top.properties.mag ?? 0;
+    const mag = magNum.toFixed(1);
     const place = top.properties.place || 'Unknown location';
     const when = new Date(top.properties.time).toISOString();
     res.json({
@@ -38,13 +40,14 @@ app.get('/api/earthquakes', async (_req, res) => {
       feed: {
         title: `M${mag} — ${place}`,
         summary: `${quakes.length} significant earthquake(s) recorded this week. Strongest: magnitude ${mag} near ${place}.`,
-        severity: mag >= 7 ? 'high' : mag >= 6 ? 'medium' : 'low',
+        severity: magNum >= 7 ? 'high' : magNum >= 6 ? 'medium' : 'low',
         label: 'Seismic',
         updatedAt: when,
         url: `https://earthquake.usgs.gov/earthquakes/eventpage/${top.id}`
       }
     });
-  } catch {
+  } catch (err) {
+    console.error('[earthquakes]', err.message);
     res.json({
       card: { value: '—', subtitle: 'Data unavailable', url: 'https://earthquake.usgs.gov/earthquakes/map/' },
       feed: null
@@ -62,6 +65,7 @@ app.get('/api/weather-alerts', async (req, res) => {
       `https://api.weather.gov/alerts/active?status=actual&severity=Extreme,Severe${area}`,
       { headers: { 'User-Agent': 'EarthWatch/1.0 (contact@earthwatch.app)' } }
     );
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const json = await r.json();
     const alerts = json.features || [];
     const count = alerts.length;
@@ -85,7 +89,8 @@ app.get('/api/weather-alerts', async (req, res) => {
           }
         : null
     });
-  } catch {
+  } catch (err) {
+    console.error('[weather-alerts]', err.message);
     res.json({
       card: { value: '—', subtitle: 'Data unavailable', url: 'https://www.weather.gov/' },
       feed: null
@@ -99,20 +104,22 @@ app.get('/api/spaceweather', async (_req, res) => {
     const r = await fetch(
       'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'
     );
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const json = await r.json();
     // json[0] is header row, rest are data: [time_tag, kp, observed, noaa_scale]
     const rows = json.slice(1).filter(row => row[2] === 'observed');
     const latest = rows[rows.length - 1];
-    const kp = latest ? parseFloat(latest[1]).toFixed(0) : null;
-    const severity = kp >= 7 ? 'high' : kp >= 5 ? 'medium' : kp >= 3 ? 'low' : 'info';
-    const label = kp >= 7 ? 'Severe storm' : kp >= 5 ? 'G-storm' : kp >= 3 ? 'Elevated' : 'Quiet';
+    const kpNum = latest ? parseFloat(latest[1]) : null;
+    const kp = kpNum !== null ? kpNum.toFixed(0) : null;
+    const severity = kpNum >= 7 ? 'high' : kpNum >= 5 ? 'medium' : kpNum >= 3 ? 'low' : 'info';
+    const label = kpNum >= 7 ? 'Severe storm' : kpNum >= 5 ? 'G-storm' : kpNum >= 3 ? 'Elevated' : 'Quiet';
     res.json({
       card: {
         value: kp !== null ? `Kp ${kp}` : '—',
         subtitle: label,
         url: 'https://www.spaceweatherlive.com/'
       },
-      feed: kp >= 3
+      feed: kpNum >= 3
         ? {
             title: `Geomagnetic activity: Kp ${kp}`,
             summary: `Current planetary K-index is ${kp} (${label}). Aurora may be visible at high latitudes.`,
@@ -123,7 +130,8 @@ app.get('/api/spaceweather', async (_req, res) => {
           }
         : null
     });
-  } catch {
+  } catch (err) {
+    console.error('[spaceweather]', err.message);
     res.json({
       card: { value: '—', subtitle: 'Data unavailable', url: 'https://www.spaceweatherlive.com/' },
       feed: null
@@ -131,32 +139,40 @@ app.get('/api/spaceweather', async (_req, res) => {
   }
 });
 
-// Air quality (WAQI world feed — no key required for feed endpoint)
-app.get('/api/airquality', async (_req, res) => {
+// Air quality (Open-Meteo — free, no API key required)
+const AQI_CITIES = {
+  us:     { name: 'Los Angeles', lat: 34.05,  lon: -118.24 },
+  canada: { name: 'Toronto',     lat: 43.65,  lon:  -79.38 },
+  global: { name: 'Delhi',       lat: 28.61,  lon:   77.21 },
+};
+
+app.get('/api/airquality', async (req, res) => {
+  const region = req.query.region || 'global';
+  const city = AQI_CITIES[region] || AQI_CITIES.global;
   try {
-    const token = process.env.WAQI_TOKEN || 'demo';
-    const r = await fetch(`https://api.waqi.info/feed/here/?token=${token}`);
+    const r = await fetch(
+      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi`
+    );
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const json = await r.json();
-    if (json.status === 'ok') {
-      const aqi = json.data.aqi;
-      const city = json.data.city?.name || 'Unknown';
-      const severity = aqi > 150 ? 'high' : aqi > 100 ? 'medium' : aqi > 50 ? 'low' : 'info';
-      return res.json({
-        card: { value: `AQI ${aqi}`, subtitle: city, url: 'https://waqi.info/' },
-        feed: aqi > 100
-          ? {
-              title: `Unhealthy air in ${city}`,
-              summary: `AQI is ${aqi}. Sensitive groups should limit outdoor activity.`,
-              severity,
-              label: 'AQI',
-              updatedAt: new Date().toISOString(),
-              url: 'https://waqi.info/'
-            }
-          : null
-      });
-    }
-    throw new Error('bad response');
-  } catch {
+    const aqi = json.current?.us_aqi;
+    if (aqi == null) throw new Error('No AQI in response');
+    const severity = aqi > 150 ? 'high' : aqi > 100 ? 'medium' : aqi > 50 ? 'low' : 'info';
+    return res.json({
+      card: { value: `AQI ${aqi}`, subtitle: city.name, url: 'https://waqi.info/' },
+      feed: aqi > 100
+        ? {
+            title: `Unhealthy air in ${city.name}`,
+            summary: `AQI is ${aqi}. Sensitive groups should limit outdoor activity.`,
+            severity,
+            label: 'AQI',
+            updatedAt: new Date().toISOString(),
+            url: 'https://waqi.info/'
+          }
+        : null
+    });
+  } catch (err) {
+    console.error('[airquality]', err.message);
     res.json({
       card: { value: '—', subtitle: 'Data unavailable', url: 'https://waqi.info/' },
       feed: null

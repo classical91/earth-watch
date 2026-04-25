@@ -6,9 +6,9 @@ const mock = {
   feed: null
 };
 
-export async function getAirQualitySummary() {
+export async function getAirQualitySummary(region) {
   try {
-    return await readJson(APP_CONFIG.endpoints.airQuality);
+    return await readJson(`${APP_CONFIG.endpoints.airQuality}?region=${region}`);
   } catch {
     return mock;
   }

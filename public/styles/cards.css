@@ -93,5 +93,75 @@
 
 .severity-low { color: var(--green); }
 .severity-medium { color: var(--amber); }
-.severity-high { color: var(--red); }
+.severity-high,
+.severity-critical { color: var(--red); }
 .severity-info { color: var(--blue); }
+
+.card-status {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.risk-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.risk-gauge {
+  --risk-pct: 0%;
+  position: relative;
+  padding: 20px 24px;
+  border-radius: 18px;
+  background: linear-gradient(90deg, var(--green) 0%, var(--amber) 50%, var(--red) 100%);
+  background-size: 200% 100%;
+}
+
+.risk-score-block {
+  background: rgba(15, 16, 18, 0.78);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.risk-score-block h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.risk-max {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-left: 4px;
+}
+
+.risk-level {
+  display: inline-block;
+  width: fit-content;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.risk-level--calm { background: rgba(71, 209, 140, 0.18); color: var(--green); }
+.risk-level--watch { background: rgba(88, 166, 255, 0.18); color: var(--blue); }
+.risk-level--elevated { background: rgba(243, 180, 93, 0.18); color: var(--amber); }
+.risk-level--high-risk { background: rgba(255, 107, 107, 0.18); color: var(--red); }
+.risk-level--critical { background: rgba(255, 107, 107, 0.28); color: var(--red); }
+
+.risk-disclaimer {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.earth-map {
+  height: 360px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}

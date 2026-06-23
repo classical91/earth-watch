@@ -19,6 +19,19 @@ export function formatRelativeFromNow(isoString) {
   return `${hours} hr ago`;
 }
 
+const STATUS_LABELS = {
+  live: 'Live',
+  cached: 'Delayed',
+  unavailable: 'Source unavailable'
+};
+
+export function formatSourceStatus(source) {
+  if (!source) return 'Loading…';
+  const label = STATUS_LABELS[source.status] || 'Unknown';
+  if (source.status === 'unavailable') return `${source.name} · ${label}`;
+  return `${source.name} · ${label} · ${formatRelativeFromNow(source.updatedAt)}`;
+}
+
 export function safeOpenExternal(anchor, url) {
   if (!anchor || !url) return;
   anchor.href = url;

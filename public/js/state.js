@@ -5,7 +5,9 @@ export const state = {
   lastRefreshIso: null,
   collapsedSections: [],
   cards: {},
-  feed: []
+  sources: {},
+  feed: [],
+  risk: { score: 0, level: 'Calm', breakdown: [] }
 };
 
 export function loadState() {
@@ -27,7 +29,9 @@ export function saveState() {
       lastRefreshIso: state.lastRefreshIso,
       collapsedSections: state.collapsedSections,
       cards: state.cards,
-      feed: state.feed
+      sources: state.sources,
+      feed: state.feed,
+      risk: state.risk
     })
   );
 }

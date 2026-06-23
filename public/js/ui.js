@@ -1,4 +1,7 @@
-import { formatRefreshLabel, formatRelativeFromNow, safeOpenExternal } from './utils.js';
+import { formatRefreshLabel, formatRelativeFromNow, formatSourceStatus, safeOpenExternal } from './utils.js';
+
+const SEVERITY_ICON = { critical: '🚨', high: '⚠️', medium: '🟡', low: '🟢' };
+const CATEGORY_LABEL = { earthquake: 'Seismic', weather: 'Alert', air: 'AQI', space: 'Solar' };
 
 export function bindRegionControls(state, onChange) {
   document.querySelectorAll('.region-btn').forEach((button) => {
@@ -13,16 +16,17 @@ export function updateRegionControls(region) {
   });
 }
 
-export function renderCards(cards) {
+export function renderCards(cards, sources) {
   const mappings = [
-    ['quake', cards.earthquakes],
-    ['alerts', cards.alerts],
-    ['aqi', cards.airQuality],
-    ['space', cards.spaceWeather]
+    ['quake', cards?.earthquakes, sources?.earthquakes],
+    ['alerts', cards?.alerts, sources?.weather],
+    ['aqi', cards?.airQuality, sources?.airQuality],
+    ['space', cards?.spaceWeather, sources?.spaceWeather]
   ];
-  for (const [key, card] of mappings) {
+  for (const [key, card, source] of mappings) {
     document.getElementById(`${key}-value`).textContent = card?.value ?? '—';
     document.getElementById(`${key}-subtitle`).textContent = card?.subtitle ?? 'No data yet';
+    document.getElementById(`${key}-status`).textContent = formatSourceStatus(source);
     safeOpenExternal(document.getElementById(`${key}-link`), card?.url);
   }
 }
@@ -31,23 +35,39 @@ export function renderFeed(feedItems) {
   const root = document.getElementById('priority-feed');
   root.innerHTML = '';
   if (!feedItems?.length) {
-    root.innerHTML = '<div class="feed-item"><p>All clear — no priority alerts right now.</p></div>';
+    root.innerHTML = '<div class="feed-item"><p>🟢 All clear — no priority alerts right now.</p></div>';
     return;
   }
   for (const item of feedItems) {
     const article = document.createElement('article');
     article.className = 'feed-item';
+    const icon = SEVERITY_ICON[item.severity] ?? '🟢';
+    const label = CATEGORY_LABEL[item.category] ?? 'Update';
     article.innerHTML = `
       <div class="feed-item-header">
-        <h3 class="feed-item-title">${item.title}</h3>
-        <span class="severity-${item.severity ?? 'info'}">${item.label ?? 'Update'}</span>
+        <h3 class="feed-item-title">${icon} ${item.title}</h3>
+        <span class="severity-${item.severity ?? 'low'}">${label}</span>
       </div>
       <p>${item.summary}</p>
-      <p class="feed-item-meta">Updated ${formatRelativeFromNow(item.updatedAt)}</p>
-      ${item.url ? `<p><a class="inline-link" href="${item.url}" target="_blank" rel="noopener noreferrer">Open source ↗</a></p>` : ''}
+      <p class="feed-item-meta">${item.source} · Updated ${formatRelativeFromNow(item.observedAt)}</p>
+      ${item.sourceUrl ? `<p><a class="inline-link" href="${item.sourceUrl}" target="_blank" rel="noopener noreferrer">Open source ↗</a></p>` : ''}
     `;
     root.appendChild(article);
   }
+}
+
+export function renderRiskScore(risk) {
+  const scoreEl = document.getElementById('risk-score');
+  const levelEl = document.getElementById('risk-level');
+  const gaugeEl = document.getElementById('risk-gauge');
+  if (!scoreEl || !levelEl) return;
+
+  const score = risk?.score ?? 0;
+  const level = risk?.level ?? 'Calm';
+  scoreEl.textContent = score;
+  levelEl.textContent = level;
+  levelEl.className = `risk-level risk-level--${level.toLowerCase().replace(/\s+/g, '-')}`;
+  if (gaugeEl) gaugeEl.style.setProperty('--risk-pct', `${score}%`);
 }
 
 export function renderRefreshTime(isoString, locale) {

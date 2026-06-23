@@ -6,13 +6,12 @@ import {
   renderCards,
   renderFeed,
   renderRefreshTime,
+  renderRiskScore,
   renderSourceSections,
   updateRegionControls
 } from './ui.js';
-import { getEarthquakeSummary } from './services/earthquakes.js';
-import { getAlertsSummary } from './services/alerts.js';
-import { getAirQualitySummary } from './services/airquality.js';
-import { getSpaceWeatherSummary } from './services/spaceweather.js';
+import { getEventsSummary } from './services/events.js';
+import { initMap, updateMap } from './map.js';
 
 async function bootstrap() {
   loadState();
@@ -44,10 +43,13 @@ async function bootstrap() {
 
   document.getElementById('refresh-btn').addEventListener('click', refreshDashboard);
 
+  initMap();
+
   // Render cached data immediately if available
   if (state.cards && state.feed?.length) {
-    renderCards(state.cards);
+    renderCards(state.cards, state.sources);
     renderFeed(state.feed);
+    renderRiskScore(state.risk);
     renderRefreshTime(state.lastRefreshIso, APP_CONFIG.refreshLabelLocale);
   }
 
@@ -55,33 +57,20 @@ async function bootstrap() {
 }
 
 async function refreshDashboard() {
-  const [earthquakes, alerts, airQuality, spaceWeather] = await Promise.all([
-    getEarthquakeSummary(state.region),
-    getAlertsSummary(state.region),
-    getAirQualitySummary(state.region),
-    getSpaceWeatherSummary(state.region)
-  ]);
+  const summary = await getEventsSummary(state.region);
 
-  state.cards = {
-    earthquakes: earthquakes.card,
-    alerts: alerts.card,
-    airQuality: airQuality.card,
-    spaceWeather: spaceWeather.card
-  };
-
-  state.feed = [
-    earthquakes.feed,
-    alerts.feed,
-    airQuality.feed,
-    spaceWeather.feed
-  ].filter(Boolean);
-
+  state.cards = summary.cards;
+  state.sources = summary.sources;
+  state.feed = summary.events;
+  state.risk = summary.risk;
   state.lastRefreshIso = new Date().toISOString();
   saveState();
 
-  renderCards(state.cards);
+  renderCards(state.cards, state.sources);
   renderFeed(state.feed);
+  renderRiskScore(state.risk);
   renderRefreshTime(state.lastRefreshIso, APP_CONFIG.refreshLabelLocale);
+  updateMap(state.region);
 }
 
 bootstrap();

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./styles/base.css" />
     <link rel="stylesheet" href="./styles/layout.css" />
     <link rel="stylesheet" href="./styles/cards.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -33,29 +34,44 @@
       </header>
 
       <main>
+        <section class="panel risk-panel" aria-label="Earth Risk Index">
+          <div id="risk-gauge" class="risk-gauge">
+            <div class="risk-score-block">
+              <p class="eyebrow">Earth Risk Index</p>
+              <h2><span id="risk-score">0</span><span class="risk-max">/100</span></h2>
+              <span id="risk-level" class="risk-level risk-level--calm">Calm</span>
+            </div>
+          </div>
+          <p class="risk-disclaimer">Informational only — not a substitute for official emergency guidance. Always follow instructions from local authorities.</p>
+        </section>
+
         <section class="hero-cards" aria-label="Overview cards">
           <article class="status-card">
             <p class="card-kicker">Major quake</p>
             <h2 id="quake-value">—</h2>
             <p id="quake-subtitle" class="card-subtitle">Waiting for data</p>
+            <p id="quake-status" class="card-status">Loading…</p>
             <a id="quake-link" class="inline-link" href="#" hidden>Open source ↗</a>
           </article>
           <article class="status-card">
             <p class="card-kicker">Active alerts</p>
             <h2 id="alerts-value">—</h2>
             <p id="alerts-subtitle" class="card-subtitle">Waiting for data</p>
+            <p id="alerts-status" class="card-status">Loading…</p>
             <a id="alerts-link" class="inline-link" href="#" hidden>Open source ↗</a>
           </article>
           <article class="status-card">
             <p class="card-kicker">AQI hotspot</p>
             <h2 id="aqi-value">—</h2>
             <p id="aqi-subtitle" class="card-subtitle">Waiting for data</p>
+            <p id="aqi-status" class="card-status">Loading…</p>
             <a id="aqi-link" class="inline-link" href="#" hidden>Open source ↗</a>
           </article>
           <article class="status-card">
             <p class="card-kicker">Space weather</p>
             <h2 id="space-value">—</h2>
             <p id="space-subtitle" class="card-subtitle">Waiting for data</p>
+            <p id="space-status" class="card-status">Loading…</p>
             <a id="space-link" class="inline-link" href="#" hidden>Open source ↗</a>
           </article>
         </section>
@@ -74,10 +90,11 @@
         <section class="panel map-panel">
           <div class="panel-head">
             <div>
-              <p class="eyebrow">Maps</p>
-              <h2>Quick launch</h2>
+              <p class="eyebrow">Map</p>
+              <h2>Earthquakes &amp; air quality</h2>
             </div>
           </div>
+          <div id="earth-map" class="earth-map"></div>
           <div class="map-links">
             <a href="https://earthquake.usgs.gov/earthquakes/map/" target="_blank" rel="noopener noreferrer">USGS Earthquake Map ↗</a>
             <a href="https://www.ventusky.com/" target="_blank" rel="noopener noreferrer">Ventusky ↗</a>
@@ -97,6 +114,7 @@
       </footer>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>

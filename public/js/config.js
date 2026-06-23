@@ -3,9 +3,7 @@ export const APP_CONFIG = {
   defaultRegion: 'global',
   refreshLabelLocale: 'en-CA',
   endpoints: {
-    earthquakes: '/api/earthquakes',
-    alerts: '/api/weather-alerts',
-    airQuality: '/api/airquality',
-    spaceWeather: '/api/spaceweather'
+    events: '/api/events',
+    map: '/api/map'
   }
 };

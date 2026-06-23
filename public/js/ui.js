@@ -48,6 +48,7 @@ export function renderFeed(feedItems) {
         <h3 class="feed-item-title">${icon} ${item.title}</h3>
         <span class="severity-${item.severity ?? 'low'}">${label}</span>
       </div>
+      ${item.location ? `<p class="feed-location">📍 ${item.location}</p>` : ''}
       <p>${item.summary}</p>
       <p class="feed-item-meta">${item.source} · Updated ${formatRelativeFromNow(item.observedAt)}</p>
       ${item.sourceUrl ? `<p><a class="inline-link" href="${item.sourceUrl}" target="_blank" rel="noopener noreferrer">Open source ↗</a></p>` : ''}

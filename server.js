@@ -63,6 +63,7 @@ async function buildEarthquakeResponse(region) {
     summary: `${quakes.length} significant earthquake(s) recorded this week. Strongest: magnitude ${mag} near ${place}.`,
     score: quakeScore(magNum, top.properties.tsunami),
     region,
+    location: place,
     source: 'USGS',
     sourceUrl: `https://earthquake.usgs.gov/earthquakes/eventpage/${top.id}`,
     observedAt: when,
@@ -129,6 +130,7 @@ async function buildWeatherResponse(region) {
     const events = alerts.slice(0, 10).map((alert) => {
       const p = alert.properties;
       const severity = p.severity === 'Extreme' ? 90 : 60;
+      const location = (p.areaDesc || '').split(';')[0]?.trim() || null;
       return makeEvent({
         id: `alert-${p.id || alert.id}`,
         category: 'weather',
@@ -136,6 +138,7 @@ async function buildWeatherResponse(region) {
         summary: p.headline || p.description?.substring(0, 200) || p.event,
         score: severity,
         region,
+        location,
         source: sourceName,
         sourceUrl,
         observedAt: p.sent || new Date().toISOString(),
@@ -264,6 +267,7 @@ async function buildAirQualityResponse(region) {
       summary: `AQI is ${aqi}. ${aqi > 150 ? 'Health warnings of emergency conditions.' : aqi > 100 ? 'Sensitive groups should limit outdoor activity.' : 'Air quality is acceptable.'}`,
       score: aqiScore(aqi),
       region,
+      location: city.name,
       source: 'Open-Meteo',
       sourceUrl,
       observedAt: new Date().toISOString(),

@@ -71,6 +71,12 @@
   color: var(--muted);
 }
 
+.feed-location {
+  color: var(--purple) !important;
+  font-weight: 600;
+  margin: 0 0 8px !important;
+}
+
 .feed-item a,
 .map-links a,
 .source-card {
